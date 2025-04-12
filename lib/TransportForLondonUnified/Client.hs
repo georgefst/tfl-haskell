@@ -175,9 +175,11 @@ _toInitRequest config req0  =
   runConfigLogWithExceptions "Client" config $ do
     parsedReq <- P.liftIO $ NH.parseRequest $ BCL.unpack $ BCL.append (configHost config) (BCL.concat (rUrlPath req0))
     req1 <- P.liftIO $ _applyAuthMethods req0 config
-    P.when
-        (configValidateAuthMethods config && (not . null . rAuthTypes) req1)
-        (E.throw $ AuthMethodException $ "AuthMethod not configured: " <> (show . head . rAuthTypes) req1)
+    case rAuthTypes req1 of
+      [] -> pure ()
+      authType : _ -> P.when
+        (configValidateAuthMethods config)
+        (E.throw $ AuthMethodException $ "AuthMethod not configured: " <> show authType)
     let req2 = req1 & _setContentTypeHeader & _setAcceptHeader
         reqHeaders = ("User-Agent", WH.toHeader (configUserAgent config)) : paramsHeaders (rParams req2)
         reqQuery = NH.renderQuery True (paramsQuery (rParams req2))

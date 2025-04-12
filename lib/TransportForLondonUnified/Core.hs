@@ -24,7 +24,8 @@ Module : TransportForLondonUnified.Core
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# OPTIONS_GHC -fno-warn-name-shadowing -fno-warn-unused-binds #-}
+{-# LANGUAGE TypeOperators #-}
+{-# OPTIONS_GHC -fno-warn-name-shadowing -fno-warn-unused-binds -fno-warn-orphans #-}
 
 module TransportForLondonUnified.Core where
 
@@ -64,6 +65,7 @@ import Control.Applicative ((<|>), empty)
 import Control.Applicative (Alternative)
 import Data.Function ((&))
 import Data.Foldable(foldlM)
+import Data.Kind (Type)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Prelude (($), (.), (<$>), (<*>), Maybe(..), Bool(..), Char, String, fmap, mempty, pure, return, show, IO, Monad, Functor)
@@ -442,7 +444,7 @@ _readDateTime =
 {-# INLINE _readDateTime #-}
 
 -- | @TI.formatISO8601Millis@
-_showDateTime :: (t ~ TI.UTCTime, TI.FormatTime t) => t -> String
+_showDateTime :: (t P.~ TI.UTCTime, TI.FormatTime t) => t -> String
 _showDateTime =
   TI.formatISO8601Millis
 {-# INLINE _showDateTime #-}
@@ -542,7 +544,7 @@ _showBinaryBase64 = T.decodeUtf8 . BL.toStrict . BL64.encode . unBinary
 -- * Lens Type Aliases
 
 type Lens_' s a = Lens_ s s a a
-type Lens_ s t a b = forall (f :: * -> *). Functor f => (a -> f b) -> s -> f t
+type Lens_ s t a b = forall (f :: Type -> Type). Functor f => (a -> f b) -> s -> f t
 
 -- * Dodgy orphan instances for backwards compatibility
 
