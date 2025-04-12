@@ -14,6 +14,7 @@ Module : TransportForLondonUnified.Core
 
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NamedFieldPuns #-}
@@ -34,12 +35,12 @@ import qualified Control.Arrow as P (left)
 import qualified Control.DeepSeq as NF
 import qualified Control.Exception.Safe as E
 import qualified Data.Aeson as A
-import qualified Data.ByteString as B
+import qualified Data.ByteString as B hiding (empty)
 import qualified Data.ByteString.Base64.Lazy as BL64
 import qualified Data.ByteString.Builder as BB
-import qualified Data.ByteString.Char8 as BC
-import qualified Data.ByteString.Lazy as BL
-import qualified Data.ByteString.Lazy.Char8 as BCL
+import qualified Data.ByteString.Char8 as BC hiding (empty)
+import qualified Data.ByteString.Lazy as BL hiding (empty)
+import qualified Data.ByteString.Lazy.Char8 as BCL hiding (empty)
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Data as P (Data, Typeable, TypeRep, typeRep)
 import qualified Data.Foldable as P
@@ -59,7 +60,7 @@ import qualified Web.FormUrlEncoded as WH
 import qualified Web.HttpApiData as WH
 import qualified Text.Printf as T
 
-import Control.Applicative ((<|>))
+import Control.Applicative ((<|>), empty)
 import Control.Applicative (Alternative)
 import Data.Function ((&))
 import Data.Foldable(foldlM)
@@ -395,7 +396,7 @@ _applyAuthMethods req config@(TransportForLondonUnifiedConfig {configAuthMethods
 -- * Utils
 
 -- | Removes Null fields.  (OpenAPI-Specification 2.0 does not allow Null in JSON)
-_omitNulls :: [(Text, A.Value)] -> A.Value
+_omitNulls :: [(A.Key, A.Value)] -> A.Value
 _omitNulls = A.object . P.filter notNull
   where
     notNull (_, A.Null) = False
@@ -435,7 +436,7 @@ instance MimeRender MimeMultipartFormData DateTime where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | @_parseISO8601@
-_readDateTime :: (TI.ParseTime t, Monad m, Alternative m) => String -> m t
+_readDateTime :: (TI.ParseTime t, Monad m, Alternative m, P.MonadFail m) => String -> m t
 _readDateTime =
   _parseISO8601
 {-# INLINE _readDateTime #-}
@@ -447,7 +448,7 @@ _showDateTime =
 {-# INLINE _showDateTime #-}
 
 -- | parse an ISO8601 date-time string
-_parseISO8601 :: (TI.ParseTime t, Monad m, Alternative m) => String -> m t
+_parseISO8601 :: (TI.ParseTime t, Monad m, Alternative m, P.MonadFail m) => String -> m t
 _parseISO8601 t =
   P.asum $
   P.flip (TI.parseTimeM True TI.defaultTimeLocale) t <$>
@@ -472,7 +473,7 @@ instance MimeRender MimeMultipartFormData Date where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | @TI.parseTimeM True TI.defaultTimeLocale "%Y-%m-%d"@
-_readDate :: (TI.ParseTime t, Monad m) => String -> m t
+_readDate :: (TI.ParseTime t, Monad m, P.MonadFail m) => String -> m t
 _readDate =
   TI.parseTimeM True TI.defaultTimeLocale "%Y-%m-%d"
 {-# INLINE _readDate #-}
@@ -504,7 +505,7 @@ instance MimeRender MimeMultipartFormData ByteArray where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | read base64 encoded characters
-_readByteArray :: Monad m => Text -> m ByteArray
+_readByteArray :: (Monad m, P.MonadFail m) => Text -> m ByteArray
 _readByteArray = P.either P.fail (pure . ByteArray) . BL64.decode . BL.fromStrict . T.encodeUtf8
 {-# INLINE _readByteArray #-}
 
@@ -530,7 +531,7 @@ instance P.Show Binary where
 instance MimeRender MimeMultipartFormData Binary where
   mimeRender _ = unBinary
 
-_readBinaryBase64 :: Monad m => Text -> m Binary
+_readBinaryBase64 :: (Monad m, P.MonadFail m) => Text -> m Binary
 _readBinaryBase64 = P.either P.fail (pure . Binary) . BL64.decode . BL.fromStrict . T.encodeUtf8
 {-# INLINE _readBinaryBase64 #-}
 
@@ -542,3 +543,15 @@ _showBinaryBase64 = T.decodeUtf8 . BL.toStrict . BL64.encode . unBinary
 
 type Lens_' s a = Lens_ s s a a
 type Lens_ s t a b = forall (f :: * -> *). Functor f => (a -> f b) -> s -> f t
+
+-- * Dodgy orphan instances for backwards compatibility
+
+instance P.MonadFail (P.Either String) where
+  fail = P.Left
+
+instance P.Alternative (P.Either String) where
+  empty = P.Left ""
+  x <|> y = P.either (P.const y) P.Right x
+
+instance WH.ToHttpApiData [Text] where
+    toUrlPiece = T.intercalate ","
