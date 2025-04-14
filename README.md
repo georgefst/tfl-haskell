@@ -1,202 +1,128 @@
-## Swagger Auto-Generated [http-client](https://www.stackage.org/lts-10.0/package/http-client-0.5.7.1) Bindings to `Transport for London Unified API` 
+# Auto-Generated OpenAPI Bindings to `TransportForLondonUnified`
 
-The library in `lib` provides auto-generated-from-Swagger [http-client](https://www.stackage.org/lts-10.0/package/http-client-0.5.7.1) bindings to the Transport for London Unified API API.
-
-Targeted swagger version: 2.0
-
-OpenAPI-Specification: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
+The library in `lib` provides auto-generated-from-OpenAPI bindings to the TransportForLondonUnified API.
 
 ## Installation
 
 Installation follows the standard approach to installing Stack-based projects.
 
 1. Install the [Haskell `stack` tool](http://docs.haskellstack.org/en/stable/README).
-2. To build the package, and generate the documentation (recommended):
-```
-stack haddock
-```
-which will generate docs for this lib in the `docs` folder.
+2. Run `stack install` to install this package.
 
-To generate the docs in the normal location (to enable hyperlinks to external libs), remove 
-```
-build:
-  haddock-arguments:
-    haddock-args:
-    - "--odir=./docs"
-```
-from the stack.yaml file and run `stack haddock` again.
-
-3. To run unit tests:
-```
-stack test
+Otherwise, if you already have a Stack project, you can include this package under the `packages` key in your `stack.yaml`:
+```yaml
+packages:
+- location:
+    git: https://github.com/yourGitOrg/yourGitRepo
+    commit: somecommit
 ```
 
-## Swagger-Codegen
+## Main Interface
 
-The code generator that produced this library, and which explains how
-to obtain and use the swagger-codegen cli tool lives at
+The main interface to this library is in the `TransportForLondonUnified.API` module, which exports the TransportForLondonUnifiedBackend type. The TransportForLondonUnifiedBackend
+type can be used to create and define servers and clients for the API.
 
-https://github.com/swagger-api/swagger-codegen
+## Creating a Client
 
-The _language_ argument (`--lang`) passed to the cli tool used should be 
+A client can be created via the `createTransportForLondonUnifiedClient` function, which will generate a function for every endpoint of the API.
+Then these functions can be invoked with `runTransportForLondonUnifiedClientWithManager` or more conveniently with `callTransportForLondonUnifiedClient`
+(depending if you want an `Either` back or you want to catch) to access the API endpoint they refer to, if the API is served
+at the `url` you specified.
 
-```
-haskell-http-client
-```
-
-### Unsupported Swagger Features
-
-* Model Inheritance
-
-This is beta software; other cases may not be supported.
-
-### Codegen "additional properties" parameters
-
-These options allow some customization of the code generation process.
-
-**haskell-http-client additional properties:**
-
-| OPTION                          | DESCRIPTION                                                                                                                   | DEFAULT  | ACTUAL                                |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------- |
-| allowFromJsonNulls              | allow JSON Null during model decoding from JSON                                                                               | true     | true              |
-| allowNonUniqueOperationIds      | allow *different* API modules to contain the same operationId. Each API must be imported qualified                            | false    | false    |
-| allowToJsonNulls                | allow emitting JSON Null during model encoding to JSON                                                                        | false    | false                |
-| baseModule                      | Set the base module namespace                                                                                                 |          | TransportForLondonUnified                      |
-| cabalPackage                    | Set the cabal package name, which consists of one or more alphanumeric words separated by hyphens                             |          | transport-for-london-unified                    |
-| cabalVersion                    | Set the cabal version number, consisting of a sequence of one or more integers separated by dots                              | 0.1.0.0  | 0.1.0.0                    |
-| configType                      | Set the name of the type used for configuration                                                                               |          | TransportForLondonUnifiedConfig                      |
-| dateFormat                      | format string used to parse/render a date                                                                                     | %Y-%m-%d | %Y-%m-%d                      |
-| dateTimeFormat                  | format string used to parse/render a datetime. (Defaults to [formatISO8601Millis][1] when not provided)                       |          |                   |
-| generateEnums                   | Generate specific datatypes for swagger enums                                                                                 | true     | true                   |
-| generateFormUrlEncodedInstances | Generate FromForm/ToForm instances for models used by x-www-form-urlencoded operations (model fields must be primitive types) | true     | true |
-| generateLenses                  | Generate Lens optics for Models                                                                                               | true     | true                  |
-| generateModelConstructors       | Generate smart constructors (only supply required fields) for models                                                          | true     | true       |
-| inlineMimeTypes                 | Inline (hardcode) the content-type and accept parameters on operations, when there is only 1 option                           | true     | true                 |
-| modelDeriving                   | Additional classes to include in the deriving() clause of Models                                                              |          |                    |
-| requestType                     | Set the name of the type used to generate requests                                                                            |          | TransportForLondonUnifiedRequest                     |
-| strictFields                    | Add strictness annotations to all model fields                                                                                | true     | true                  |
-| useMonadLogger                  | Use the monad-logger package to provide logging (if instead false, use the katip logging package)                             | false    | false                |
-
-[1]: https://www.stackage.org/haddock/lts-9.0/iso8601-time-0.1.4/Data-Time-ISO8601.html#v:formatISO8601Millis
-
-An example setting _strictFields_ and _dateTimeFormat_:
-
-```
-java -jar swagger-codegen-cli.jar generate -i petstore.yaml -l haskell-http-client -o output/haskell-http-client -DstrictFields=true -DdateTimeFormat="%Y-%m-%dT%H:%M:%S%Q%z"
-```
-
-View the full list of Codegen "config option" parameters with the command:
-
-```
-java -jar swagger-codegen-cli.jar config-help -l haskell-http-client
-```
-
-## Usage Notes
-
-### Example SwaggerPetstore Haddock documentation 
-
-An example of the generated haddock documentation targeting the server http://petstore.swagger.io/ (SwaggerPetstore) can be found [here][2]
-
-[2]: https://hackage.haskell.org/package/swagger-petstore
-
-### Example SwaggerPetstore App
-
-An example application using the auto-generated haskell-http-client bindings for the server http://petstore.swagger.io/ can be found [here][3]
-
-[3]: https://github.com/swagger-api/swagger-codegen/tree/master/samples/client/petstore/haskell-http-client/example-app
-
-This library is intended to be imported qualified.
-
-### Modules
-
-| MODULE              | NOTES                                               |
-| ------------------- | --------------------------------------------------- |
-| TransportForLondonUnified.Client    | use the "dispatch" functions to send requests       |
-| TransportForLondonUnified.Core      | core funcions, config and request types             |
-| TransportForLondonUnified.API       | construct api requests                              |
-| TransportForLondonUnified.Model     | describes api models                                |
-| TransportForLondonUnified.MimeTypes | encoding/decoding MIME types (content-types/accept) |
-| TransportForLondonUnified.ModelLens | lenses for model fields                             |
-| TransportForLondonUnified.Logging   | logging functions and utils                         |
-
-
-### MimeTypes
-
-This library adds type safety around what swagger specifies as
-Produces and Consumes for each Operation (e.g. the list of MIME types an
-Operation can Produce (using 'accept' headers) and Consume (using 'content-type' headers).
-
-For example, if there is an Operation named _addFoo_, there will be a
-data type generated named _AddFoo_ (note the capitalization), which
-describes additional constraints and actions on the _addFoo_ operation
-via its typeclass instances. These typeclass instances can be viewed
-in GHCi or via the Haddocks.
-
-* required parameters are included as function arguments to _addFoo_
-* optional non-body parameters are included by using  `applyOptionalParam`
-* optional body parameters are set by using  `setBodyParam`
-
-Example code generated for pretend _addFoo_ operation: 
+For example, if `localhost:8080` is serving the TransportForLondonUnified API, you can write:
 
 ```haskell
-data AddFoo 	
-instance Consumes AddFoo MimeJSON
-instance Produces AddFoo MimeJSON
-instance Produces AddFoo MimeXML
-instance HasBodyParam AddFoo FooModel
-instance HasOptionalParam AddFoo FooName
-instance HasOptionalParam AddFoo FooId
+{-# LANGUAGE RecordWildCards #-}
+
+import TransportForLondonUnified.API as API
+
+import           Network.HTTP.Client     (newManager)
+import           Network.HTTP.Client.TLS (tlsManagerSettings)
+import           Servant.Client          (ClientEnv, mkClientEnv, parseBaseUrl)
+
+
+main :: IO ()
+main = do
+  -- Configure the BaseUrl for the client
+  url <- parseBaseUrl "http://localhost:8080/"
+
+  -- You probably want to reuse the Manager across calls, for performance reasons
+  manager <- newManager tlsManagerSettings
+
+  -- Create the client (all endpoint functions will be available)
+  let TransportForLondonUnifiedBackend{..} = API.createTransportForLondonUnifiedClient
+
+  -- Any TransportForLondonUnified API call can go here, e.g. here we call `getSomeEndpoint`
+  API.callTransportForLondonUnified (mkClientEnv manager url) getSomeEndpoint
 ```
 
-this would indicate that:
+## Creating a Server
 
-* the _addFoo_ operation can consume JSON
-* the _addFoo_ operation produces JSON or XML, depending on the argument passed to the dispatch function
-* the _addFoo_ operation can set it's body param of _FooModel_ via `setBodyParam`
-* the _addFoo_ operation can set 2 different optional parameters via `applyOptionalParam`
-
-If the swagger spec doesn't declare it can accept or produce a certain
-MIME type for a given Operation, you should either add a Produces or
-Consumes instance for the desired MIME types (assuming the server
-supports it), use `dispatchLbsUnsafe` or modify the swagger spec and
-run the generator again.
-
-New MIME type instances can be added via MimeType/MimeRender/MimeUnrender
-
-Only JSON instances are generated by default, and in some case
-x-www-form-urlencoded instances (FromFrom, ToForm) will also be
-generated if the model fields are primitive types, and there are
-Operations using x-www-form-urlencoded which use those models.
-
-### Authentication
-
-A haskell data type will be generated for each swagger authentication type.
-
-If for example the AuthMethod `AuthOAuthFoo` is generated for OAuth operations, then
-`addAuthMethod` should be used to add the AuthMethod config.
-
-When a request is dispatched, if a matching auth method is found in
-the config, it will be applied to the request.
-
-### Example
+In order to create a server, you must use the `runTransportForLondonUnifiedMiddlewareServer` function. However, you unlike the client, in which case you *got* a `TransportForLondonUnifiedBackend`
+from the library, you must instead *provide* a `TransportForLondonUnifiedBackend`. For example, if you have defined handler functions for all the
+functions in `TransportForLondonUnified.Handlers`, you can write:
 
 ```haskell
-mgr <- newManager defaultManagerSettings
-config0 <- withStdoutLogging =<< newConfig 
-let config = config0
-    `addAuthMethod` AuthOAuthFoo "secret-key"
+{-# LANGUAGE RecordWildCards #-}
 
-let addFooRequest = 
-  addFoo 
-    (ContentType MimeJSON) 
-    (Accept MimeXML) 
-    (ParamBar paramBar)
-    (ParamQux paramQux)
-    modelBaz
-  `applyOptionalParam` FooId 1
-  `applyOptionalParam` FooName "name"
-  `setHeader` [("qux_header","xxyy")]
-addFooResult <- dispatchMime mgr config addFooRequest
+import TransportForLondonUnified.API
+-- required dependency: wai
+import Network.Wai (Middleware)
+-- required dependency: wai-extra
+import Network.Wai.Middleware.RequestLogger (logStdout)
+
+-- A module you wrote yourself, containing all handlers needed for the TransportForLondonUnifiedBackend type.
+import TransportForLondonUnified.Handlers
+
+-- If you would like to not use any middlewares you could use runTransportForLondonUnifiedServer instead
+
+-- Combined middlewares
+requestMiddlewares :: Middleware
+requestMiddlewares = logStdout
+
+-- Run a TransportForLondonUnified server on localhost:8080
+main :: IO ()
+main = do
+  let server = TransportForLondonUnifiedBackend{..}
+      config = Config "http://localhost:8080/"
+  runTransportForLondonUnifiedMiddlewareServer config requestMiddlewares server
 ```
 
-See the example app and the haddocks for details.
+## Authentication
+
+Currently basic, bearer and API key authentication is supported. The API key must be provided
+in the request header.
+
+For clients authentication the function `clientAuth` is generated automatically. For basic
+authentication the argument is of type `BasicAuthData` provided by `Servant.API.BasicAuth`.
+For bearer and API key authentication the argument is the key/token and is of type `Text`.
+Protected endpoints on the client will receive an extra argument. The value returned by
+`clientAuth keyTokenOrBasic` can then be used to make authenticated requests.
+
+For the server you are free to choose a custom data type. After you specified an instance of
+`AuthServerData` it is automatically added as a first argument to protected endpoints:
+
+```
+newtype Account = Account {unAccount :: Text}
+type instance AuthServerData Protected = Account
+```
+
+Additionally, you have to provide value for the `TransportForLondonUnifiedAuth` type provided by the
+`TransportForLondonUnified.API` module:
+
+```
+auth :: TransportForLondonUnifiedAuth
+auth =
+  TransportForLondonUnifiedAuth
+    { lookupUser = lookupAccount,
+      authError = \request -> err401 {errBody = "Missing header"}
+    }
+```
+
+`lookupAccount` is a user defined function used to verify the key, token or basic auth data.
+`authError` takes a `Request` and returns a `ServerError`. The value is used by the server
+functions:
+
+```
+runTransportForLondonUnifiedMiddlewareServer config requestMiddlewares auth server
+```
