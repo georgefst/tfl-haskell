@@ -43,9 +43,6 @@ import           Servant.Client          (ClientEnv, mkClientEnv, parseBaseUrl)
 
 main :: IO ()
 main = do
-  -- Configure the BaseUrl for the client
-  url <- parseBaseUrl "http://localhost:8080/"
-
   -- You probably want to reuse the Manager across calls, for performance reasons
   manager <- newManager tlsManagerSettings
 
@@ -53,7 +50,7 @@ main = do
   let TransportForLondonUnifiedBackend{..} = API.createTransportForLondonUnifiedClient
 
   -- Any TransportForLondonUnified API call can go here, e.g. here we call `getSomeEndpoint`
-  API.callTransportForLondonUnified (mkClientEnv manager url) getSomeEndpoint
+  API.callTransportForLondonUnified (mkClientEnv manager baseUrl) getSomeEndpoint
 ```
 
 ## Creating a Server

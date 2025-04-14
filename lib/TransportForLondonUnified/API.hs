@@ -69,8 +69,8 @@ import           Servant                            (ServerError, serveWithConte
 import           Servant.API                        hiding (addHeader)
 import           Servant.API.Verbs                  (StdMethod (..), Verb)
 import           Servant.API.Experimental.Auth      (AuthProtect)
-import           Servant.Client                     (ClientEnv, Scheme (Http), ClientError, client,
-                                                     mkClientEnv, parseBaseUrl)
+import           Servant.Client                     (ClientEnv, Scheme (..), ClientError, client,
+                                                     mkClientEnv, parseBaseUrl, BaseUrl (..))
 import           Servant.Client.Core                (baseUrlPort, baseUrlHost, AuthClientData, AuthenticatedRequest, addHeader, mkAuthenticatedRequest, AuthClientData, AuthenticatedRequest, addHeader, mkAuthenticatedRequest)
 import           Servant.Client.Internal.HttpClient (ClientM (..))
 import           Servant.Server                     (Handler (..), Application, Context ((:.), EmptyContext))
@@ -613,3 +613,6 @@ instance ToHttpApiData [Text] where
   toUrlPiece = T.intercalate ","
 instance FromHttpApiData [Text] where
   parseUrlPiece = pure . T.splitOn ","
+
+baseUrl :: BaseUrl
+baseUrl = BaseUrl{baseUrlScheme = Https, baseUrlHost = "api.tfl.gov.uk", baseUrlPort = 443, baseUrlPath = ""}
