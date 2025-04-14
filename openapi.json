@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": { "version": "v1", "title": "Transport for London Unified API" },
-  "host": "api.digital.tfl.gov.uk",
+  "host": "api.tfl.gov.uk",
   "schemes": ["https"],
   "paths": {
     "/AccidentStats/{year}": {
