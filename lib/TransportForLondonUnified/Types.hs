@@ -134,8 +134,8 @@ import Data.Data (Data)
 import Data.UUID (UUID)
 import Data.List (lookup)
 import Data.Maybe (fromMaybe)
-import Data.Aeson (Value (..), FromJSON(..), ToJSON(..), genericToJSON, genericParseJSON)
-import Data.Aeson.Types (Options(..), defaultOptions)
+import Data.Aeson (Value(..), FromJSON(..), ToJSON(..), genericToJSON, genericParseJSON, (.:?), withObject)
+import Data.Aeson.Types (Options(..), defaultOptions, Parser)
 import Data.Set (Set)
 import Data.Text (Text)
 import Data.Time
@@ -3271,23 +3271,27 @@ optionsTflApiPresentationEntitiesPrediction =
 -- | 
 data TflApiPresentationEntitiesPredictionTiming = TflApiPresentationEntitiesPredictionTiming
   { tflApiPresentationEntitiesPredictionTimingCountdownServerAdjustment :: Maybe Text -- ^ 
-  , tflApiPresentationEntitiesPredictionTimingSource :: Maybe UTCTime' -- ^ 
-  , tflApiPresentationEntitiesPredictionTimingInsert :: Maybe UTCTime' -- ^ 
+  , tflApiPresentationEntitiesPredictionTimingSource :: Maybe UTCTime -- ^ 
+  , tflApiPresentationEntitiesPredictionTimingInsert :: Maybe UTCTime -- ^ 
   , tflApiPresentationEntitiesPredictionTimingRead :: Maybe UTCTime -- ^ 
   , tflApiPresentationEntitiesPredictionTimingSent :: Maybe UTCTime -- ^ 
-  , tflApiPresentationEntitiesPredictionTimingReceived :: Maybe UTCTime' -- ^ 
+  , tflApiPresentationEntitiesPredictionTimingReceived :: Maybe UTCTime -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
-newtype UTCTime' = UTCTime' UTCTime
-  deriving newtype (Show, Eq, ToSchema, ToJSON)
-  deriving stock (Data)
-instance FromJSON UTCTime' where
-  parseJSON = \case
-    String "0001-01-01T00:00:00" -> pure $ UTCTime' $ UTCTime (fromOrdinalDate 0 0) 0
-    x -> UTCTime' <$> parseJSON x
-
 instance FromJSON TflApiPresentationEntitiesPredictionTiming where
-  parseJSON = genericParseJSON optionsTflApiPresentationEntitiesPredictionTiming
+  parseJSON = withObject "TflApiPresentationEntitiesPredictionTiming" $ \v -> 
+    TflApiPresentationEntitiesPredictionTiming
+      <$> v .:? "countdownServerAdjustment"
+      <*> (v .:? "source" >>= traverse parseUTCTimeOrZero)
+      <*> (v .:? "insert" >>= traverse parseUTCTimeOrZero)
+      <*> v .:? "read"
+      <*> v .:? "sent"
+      <*> (v .:? "received" >>= traverse parseUTCTimeOrZero)
+    where
+      parseUTCTimeOrZero val = case val of
+        String "0001-01-01T00:00:00" -> pure $ UTCTime (fromOrdinalDate 0 0) 0
+        _ -> parseJSON val
+
 instance ToJSON TflApiPresentationEntitiesPredictionTiming where
   toJSON = genericToJSON optionsTflApiPresentationEntitiesPredictionTiming
 instance ToSchema TflApiPresentationEntitiesPredictionTiming where
