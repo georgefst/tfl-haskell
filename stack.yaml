@@ -1,8 +1,8 @@
-resolver: lts-13.8
-build:
-  haddock-arguments:
-    haddock-args:
-    - "--odir=./docs"
+resolver: lts-22.12
 extra-deps: []
 packages:
 - '.'
+nix:
+  enable: false
+  packages:
+    - zlib
