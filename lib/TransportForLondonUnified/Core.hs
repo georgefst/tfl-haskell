@@ -454,7 +454,7 @@ _parseISO8601 :: (TI.ParseTime t, Monad m, Alternative m, P.MonadFail m) => Stri
 _parseISO8601 t =
   P.asum $
   P.flip (TI.parseTimeM True TI.defaultTimeLocale) t <$>
-  ["%FT%T%QZ", "%FT%T%Q%z", "%FT%T%Q%Z"]
+  ["%FT%T%QZ", "%FT%T%Q%z", "%FT%T%Q%Z", "%FT%T%Q"]
 {-# INLINE _parseISO8601 #-}
 
 -- * Date Formatting
