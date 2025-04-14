@@ -166,7 +166,7 @@ type TransportForLondonUnifiedAPI
     :<|> "Line" :> "Mode" :> Capture "modes" [Text] :> "Route" :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineRouteByMode' route
     :<|> "Line" :> Capture "id" Text :> "Route" :> "Sequence" :> Capture "direction" Text :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> QueryParam "excludeCrowding" Bool :> Verb 'GET 200 '[JSON] TflApiPresentationEntitiesRouteSequence -- 'lineRouteSequence' route
     :<|> "Line" :> "Search" :> Capture "query" Text :> QueryParam "modes" (QueryList 'MultiParamArray (Text)) :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> Verb 'GET 200 '[JSON] TflApiPresentationEntitiesRouteSearchResponse -- 'lineSearch' route
-    :<|> "Line" :> Capture "ids" [Text] :> "Status" :> Capture "StartDate" null :> "to" :> Capture "EndDate" null :> QueryParam "detail" Bool :> QueryParam "startDate" Text :> QueryParam "endDate" Text :> QueryParam "dateRange.startDate" UTCTime :> QueryParam "dateRange.endDate" UTCTime :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatus' route
+    :<|> "Line" :> Capture "ids" [Text] :> "Status" :> Capture "startDate" Text :> "to" :> Capture "endDate" Text :> QueryParam "detail" Bool :> QueryParam "dateRange.startDate" UTCTime :> QueryParam "dateRange.endDate" UTCTime :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatus' route
     :<|> "Line" :> Capture "ids" [Text] :> "Status" :> QueryParam "detail" Bool :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusByIds' route
     :<|> "Line" :> "Mode" :> Capture "modes" [Text] :> "Status" :> QueryParam "detail" Bool :> QueryParam "severityLevel" Text :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusByMode' route
     :<|> "Line" :> "Status" :> Capture "severity" Int :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusBySeverity' route
@@ -270,7 +270,7 @@ data TransportForLondonUnifiedBackend a m = TransportForLondonUnifiedBackend
   , lineRouteByMode :: [Text] -> Maybe [Text] -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineRouteSequence :: Text -> Text -> Maybe [Text] -> Maybe Bool -> m TflApiPresentationEntitiesRouteSequence{- ^  -}
   , lineSearch :: Text -> Maybe [Text] -> Maybe [Text] -> m TflApiPresentationEntitiesRouteSearchResponse{- ^  -}
-  , lineStatus :: [Text] -> null -> null -> Maybe Bool -> Maybe Text -> Maybe Text -> Maybe UTCTime -> Maybe UTCTime -> m [TflApiPresentationEntitiesLine]{- ^  -}
+  , lineStatus :: [Text] -> Text -> Text -> Maybe Bool -> Maybe UTCTime -> Maybe UTCTime -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusByIds :: [Text] -> Maybe Bool -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusByMode :: [Text] -> Maybe Bool -> Maybe Text -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusBySeverity :: Int -> m [TflApiPresentationEntitiesLine]{- ^  -}

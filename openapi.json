@@ -895,7 +895,7 @@
         "deprecated": false
       }
     },
-    "/Line/{ids}/Status/{StartDate}/to/{EndDate}": {
+    "/Line/{ids}/Status/{startDate}/to/{endDate}": {
       "get": {
         "tags": ["Line"],
         "summary": "Gets the line status for given line ids during the provided dates e.g Minor Delays",
@@ -925,13 +925,13 @@
           },
           {
             "name": "startDate",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "endDate",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
