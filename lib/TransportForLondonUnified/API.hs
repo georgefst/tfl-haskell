@@ -166,7 +166,7 @@ type TransportForLondonUnifiedAPI
     :<|> "Line" :> "Mode" :> Capture "modes" [Text] :> "Route" :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineRouteByMode' route
     :<|> "Line" :> Capture "id" Text :> "Route" :> "Sequence" :> Capture "direction" Text :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> QueryParam "excludeCrowding" Bool :> Verb 'GET 200 '[JSON] TflApiPresentationEntitiesRouteSequence -- 'lineRouteSequence' route
     :<|> "Line" :> "Search" :> Capture "query" Text :> QueryParam "modes" (QueryList 'MultiParamArray (Text)) :> QueryParam "serviceTypes" (QueryList 'MultiParamArray (Text)) :> Verb 'GET 200 '[JSON] TflApiPresentationEntitiesRouteSearchResponse -- 'lineSearch' route
-    :<|> "Line" :> Capture "ids" [Text] :> "Status" :> Capture "StartDate" null :> "to" :> Capture "EndDate" null :> QueryParam "detail" Bool :> QueryParam "startDate" Text :> QueryParam "endDate" Text :> QueryParam "dateRange.startDate" UTCTime :> QueryParam "dateRange.endDate" UTCTime :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatus' route
+    :<|> "Line" :> Capture "ids" [Text] :> "Status" :> Capture "startDate" Text :> "to" :> Capture "endDate" Text :> QueryParam "detail" Bool :> QueryParam "dateRange.startDate" UTCTime :> QueryParam "dateRange.endDate" UTCTime :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatus' route
     :<|> "Line" :> Capture "ids" [Text] :> "Status" :> QueryParam "detail" Bool :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusByIds' route
     :<|> "Line" :> "Mode" :> Capture "modes" [Text] :> "Status" :> QueryParam "detail" Bool :> QueryParam "severityLevel" Text :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusByMode' route
     :<|> "Line" :> "Status" :> Capture "severity" Int :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesLine] -- 'lineStatusBySeverity' route
@@ -181,11 +181,11 @@ type TransportForLondonUnifiedAPI
     :<|> "Occupancy" :> "ChargeConnector" :> Capture "ids" [Text] :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesChargeConnectorOccupancy] -- 'occupancyGetChargeConnectorStatus' route
     :<|> "Occupancy" :> "CarPark" :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesCarParkOccupancy] -- 'occupancyGet_0' route
     :<|> "Place" :> Capture "id" Text :> QueryParam "includeChildren" Bool :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesPlace] -- 'placeGet' route
-    :<|> "Place" :> Capture "type" [Text] :> "At" :> Capture "Lat" null :> Capture "Lon" null :> QueryParam "lat" Text :> QueryParam "lon" Text :> QueryParam "location.lat" Double :> QueryParam "location.lon" Double :> Verb 'GET 200 '[JSON] Value -- 'placeGetAt' route
+    :<|> "Place" :> Capture "type" [Text] :> "At" :> Capture "lat" Text :> Capture "lon" Text :> QueryParam "location.lat" Double :> QueryParam "location.lon" Double :> Verb 'GET 200 '[JSON] Value -- 'placeGetAt' route
     :<|> "Place" :> QueryParam "radius" Double :> QueryParam "categories" (QueryList 'MultiParamArray (Text)) :> QueryParam "includeChildren" Bool :> QueryParam "type" (QueryList 'MultiParamArray (Text)) :> QueryParam "activeOnly" Bool :> QueryParam "numberOfPlacesToReturn" Int :> QueryParam "placeGeo.swLat" Double :> QueryParam "placeGeo.swLon" Double :> QueryParam "placeGeo.neLat" Double :> QueryParam "placeGeo.neLon" Double :> QueryParam "placeGeo.lat" Double :> QueryParam "placeGeo.lon" Double :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesStopPoint] -- 'placeGetByGeo' route
     :<|> "Place" :> "Type" :> Capture "types" [Text] :> QueryParam "activeOnly" Bool :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesPlace] -- 'placeGetByType' route
-    :<|> "Place" :> Capture "type" [Text] :> "overlay" :> Capture "z" Int :> Capture "Lat" null :> Capture "Lon" null :> Capture "width" Int :> Capture "height" Int :> QueryParam "lat" Text :> QueryParam "lon" Text :> QueryParam "location.lat" Double :> QueryParam "location.lon" Double :> Verb 'GET 200 '[JSON] Value -- 'placeGetOverlay' route
-    :<|> "Place" :> "Address" :> "Streets" :> Capture "Postcode" null :> QueryParam "postcode" Text :> QueryParam "postcodeInput.postcode" Text :> Verb 'GET 200 '[JSON] Value -- 'placeGetStreetsByPostCode' route
+    :<|> "Place" :> Capture "type" [Text] :> "overlay" :> Capture "z" Int :> Capture "lat" Text :> Capture "lon" Text :> Capture "width" Int :> Capture "height" Int :> QueryParam "location.lat" Double :> QueryParam "location.lon" Double :> Verb 'GET 200 '[JSON] Value -- 'placeGetOverlay' route
+    :<|> "Place" :> "Address" :> "Streets" :> Capture "postcode" Text :> QueryParam "postcodeInput.postcode" Text :> Verb 'GET 200 '[JSON] Value -- 'placeGetStreetsByPostCode' route
     :<|> "Place" :> "Meta" :> "Categories" :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesPlaceCategory] -- 'placeMetaCategories' route
     :<|> "Place" :> "Meta" :> "PlaceTypes" :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesPlaceCategory] -- 'placeMetaPlaceTypes' route
     :<|> "Place" :> "Search" :> QueryParam "name" Text :> QueryParam "types" (QueryList 'MultiParamArray (Text)) :> Verb 'GET 200 '[JSON] [TflApiPresentationEntitiesPlace] -- 'placeSearch' route
@@ -270,7 +270,7 @@ data TransportForLondonUnifiedBackend a m = TransportForLondonUnifiedBackend
   , lineRouteByMode :: [Text] -> Maybe [Text] -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineRouteSequence :: Text -> Text -> Maybe [Text] -> Maybe Bool -> m TflApiPresentationEntitiesRouteSequence{- ^  -}
   , lineSearch :: Text -> Maybe [Text] -> Maybe [Text] -> m TflApiPresentationEntitiesRouteSearchResponse{- ^  -}
-  , lineStatus :: [Text] -> null -> null -> Maybe Bool -> Maybe Text -> Maybe Text -> Maybe UTCTime -> Maybe UTCTime -> m [TflApiPresentationEntitiesLine]{- ^  -}
+  , lineStatus :: [Text] -> Text -> Text -> Maybe Bool -> Maybe UTCTime -> Maybe UTCTime -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusByIds :: [Text] -> Maybe Bool -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusByMode :: [Text] -> Maybe Bool -> Maybe Text -> m [TflApiPresentationEntitiesLine]{- ^  -}
   , lineStatusBySeverity :: Int -> m [TflApiPresentationEntitiesLine]{- ^  -}
@@ -285,11 +285,11 @@ data TransportForLondonUnifiedBackend a m = TransportForLondonUnifiedBackend
   , occupancyGetChargeConnectorStatus :: [Text] -> m [TflApiPresentationEntitiesChargeConnectorOccupancy]{- ^  -}
   , occupancyGet_0 :: m [TflApiPresentationEntitiesCarParkOccupancy]{- ^  -}
   , placeGet :: Text -> Maybe Bool -> m [TflApiPresentationEntitiesPlace]{- ^  -}
-  , placeGetAt :: [Text] -> null -> null -> Maybe Text -> Maybe Text -> Maybe Double -> Maybe Double -> m Value{- ^  -}
+  , placeGetAt :: [Text] -> Text -> Text -> Maybe Double -> Maybe Double -> m Value{- ^  -}
   , placeGetByGeo :: Maybe Double -> Maybe [Text] -> Maybe Bool -> Maybe [Text] -> Maybe Bool -> Maybe Int -> Maybe Double -> Maybe Double -> Maybe Double -> Maybe Double -> Maybe Double -> Maybe Double -> m [TflApiPresentationEntitiesStopPoint]{- ^  -}
   , placeGetByType :: [Text] -> Maybe Bool -> m [TflApiPresentationEntitiesPlace]{- ^  -}
-  , placeGetOverlay :: [Text] -> Int -> null -> null -> Int -> Int -> Maybe Text -> Maybe Text -> Maybe Double -> Maybe Double -> m Value{- ^  -}
-  , placeGetStreetsByPostCode :: null -> Maybe Text -> Maybe Text -> m Value{- ^  -}
+  , placeGetOverlay :: [Text] -> Int -> Text -> Text -> Int -> Int -> Maybe Double -> Maybe Double -> m Value{- ^  -}
+  , placeGetStreetsByPostCode :: Text -> Maybe Text -> m Value{- ^  -}
   , placeMetaCategories :: m [TflApiPresentationEntitiesPlaceCategory]{- ^  -}
   , placeMetaPlaceTypes :: m [TflApiPresentationEntitiesPlaceCategory]{- ^  -}
   , placeSearch :: Maybe Text -> Maybe [Text] -> m [TflApiPresentationEntitiesPlace]{- ^  -}

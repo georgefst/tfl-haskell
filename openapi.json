@@ -895,7 +895,7 @@
         "deprecated": false
       }
     },
-    "/Line/{ids}/Status/{StartDate}/to/{EndDate}": {
+    "/Line/{ids}/Status/{startDate}/to/{endDate}": {
       "get": {
         "tags": ["Line"],
         "summary": "Gets the line status for given line ids during the provided dates e.g Minor Delays",
@@ -925,13 +925,13 @@
           },
           {
             "name": "startDate",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "endDate",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
@@ -1676,7 +1676,7 @@
         "deprecated": false
       }
     },
-    "/Place/Address/Streets/{Postcode}": {
+    "/Place/Address/Streets/{postcode}": {
       "get": {
         "tags": ["Place"],
         "summary": "Gets the set of streets associated with a post code.",
@@ -1691,7 +1691,7 @@
         "parameters": [
           {
             "name": "postcode",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
@@ -1915,7 +1915,7 @@
         "deprecated": false
       }
     },
-    "/Place/{type}/At/{Lat}/{Lon}": {
+    "/Place/{type}/At/{lat}/{lon}": {
       "get": {
         "tags": ["Place"],
         "summary": "Gets any places of the given type whose geography intersects the given latitude and longitude. In practice this means the Place\r\n            must be polygonal e.g. a BoroughBoundary.",
@@ -1936,8 +1936,8 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          { "name": "lat", "in": "query", "required": true, "type": "string" },
-          { "name": "lon", "in": "query", "required": true, "type": "string" },
+          { "name": "lat", "in": "path", "required": true, "type": "string" },
+          { "name": "lon", "in": "path", "required": true, "type": "string" },
           {
             "name": "location.lat",
             "in": "query",
@@ -1962,7 +1962,7 @@
         "deprecated": false
       }
     },
-    "/Place/{type}/overlay/{z}/{Lat}/{Lon}/{width}/{height}": {
+    "/Place/{type}/overlay/{z}/{lat}/{lon}/{width}/{height}": {
       "get": {
         "tags": ["Place"],
         "summary": "Gets the place overlay for a given set of co-ordinates and a given width/height.",
@@ -2007,8 +2007,8 @@
             "type": "integer",
             "format": "int32"
           },
-          { "name": "lat", "in": "query", "required": true, "type": "string" },
-          { "name": "lon", "in": "query", "required": true, "type": "string" },
+          { "name": "lat", "in": "path", "required": true, "type": "string" },
+          { "name": "lon", "in": "path", "required": true, "type": "string" },
           {
             "name": "location.lat",
             "in": "query",
