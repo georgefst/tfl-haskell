@@ -104,7 +104,7 @@ newConfig :: IO TransportForLondonUnifiedConfig
 newConfig = do
     logCxt <- initLogContext
     return $ TransportForLondonUnifiedConfig
-        { configHost = "https://api.digital.tfl.gov.uk"
+        { configHost = "https://api.tfl.gov.uk"
         , configUserAgent = "transport-for-london-unified/0.1.0.0"
         , configLogExecWithContext = runDefaultLogExecWithContext
         , configLogContext = logCxt
