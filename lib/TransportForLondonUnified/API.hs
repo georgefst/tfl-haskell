@@ -342,14 +342,6 @@ data TransportForLondonUnifiedAuth = TransportForLondonUnifiedAuth
   { lookupUser :: ByteString -> Handler AuthServer
   , authError :: Request -> ServerError
   }
--- | Authentication settings for TransportForLondonUnified.
--- lookupUser is used to retrieve a user given a header value. The data type can be specified by providing an
--- type instance for AuthServerData. authError is a function that given a request returns a custom error that
--- is returned when the header is not found.
-data TransportForLondonUnifiedAuth = TransportForLondonUnifiedAuth
-  { lookupUser :: ByteString -> Handler AuthServer
-  , authError :: Request -> ServerError
-  }
 
 newtype TransportForLondonUnifiedClient a = TransportForLondonUnifiedClient
   { runClient :: ClientEnv -> ExceptT ClientError IO a
@@ -613,23 +605,6 @@ type instance AuthClientData Protected = Text
 
 clientAuth :: Text -> AuthClient
 clientAuth key = mkAuthenticatedRequest key (addHeader "app_key")
--- Authentication is implemented with servants generalized authentication:
--- https://docs.servant.dev/en/stable/tutorial/Authentication.html#generalized-authentication
-
-authHandler :: TransportForLondonUnifiedAuth -> AuthHandler Request AuthServer
-authHandler TransportForLondonUnifiedAuth{..} = mkAuthHandler handler
-  where
-    handler req = case lookup "app_id" (requestHeaders req) of
-      Just header -> lookupUser header
-      Nothing -> throwError (authError req)
-
-type Protected = AuthProtect "apikey"
-type AuthServer = AuthServerData Protected
-type AuthClient = AuthenticatedRequest Protected
-type instance AuthClientData Protected = Text
-
-clientAuth :: Text -> AuthClient
-clientAuth key = mkAuthenticatedRequest key (addHeader "app_id")
 
 serverContext :: TransportForLondonUnifiedAuth -> Context (AuthHandler Request AuthServer ': '[])
 serverContext auth = authHandler auth :. EmptyContext
