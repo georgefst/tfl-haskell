@@ -608,3 +608,8 @@ clientAuth key = mkAuthenticatedRequest key (addHeader "app_key")
 
 serverContext :: TransportForLondonUnifiedAuth -> Context (AuthHandler Request AuthServer ': '[])
 serverContext auth = authHandler auth :. EmptyContext
+
+instance ToHttpApiData [Text] where
+  toUrlPiece = T.intercalate ","
+instance FromHttpApiData [Text] where
+  parseUrlPiece = pure . T.splitOn ","
